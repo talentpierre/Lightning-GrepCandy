@@ -6,7 +6,9 @@ var_rpcserver="192.168.192.10"
 var_lastinvoice="/home/pi/Lightning-GrepCandy/lastinvoice.txt"
 var_satoshi=10
 var_seconds=5
-#rhash=$(lncli --network=testnet --macaroonpath $var_macaroonpath --tlscertpath $var_tlscertpath --rpcserver $var_rpcserver listinvoices --max_invoices 1 | grep r_hash | cut -d '"' -f 4)
+
+touch $var_lastinvoice
+
 lncli --network=testnet --macaroonpath $var_macaroonpath --tlscertpath $var_tlscertpath --rpcserver $var_rpcserver listinvoices --max_invoices 1 > $var_lastinvoice
 rhash=$(cat $var_lastinvoice | grep r_hash | cut -d '"' -f 4)
 settledate=$(cat $var_lastinvoice | grep settle_date | cut -d '"' -f 4)
@@ -23,9 +25,6 @@ lncli --network=testnet --macaroonpath $var_macaroonpath --tlscertpath $var_tlsc
 openstate='OPEN'
 state=$(cat $var_lastinvoice | grep state | cut -d '"' -f 4)
 if [ "$state" != "$openstate" ]
-#sat=$(cat $var_lastinvoice | grep amt_paid_sat | cut -d '"' -f 4)
-#rhash=$(cat $var_lastinvoice | grep r_hash | cut -d '"' -f 4)
-#settledate=$(cat $var_lastinvoice | grep settle_date | cut -d '"' -f 4)
 then
     echo "######STATE-BEDINGUNG#######"
     sat=$(cat $var_lastinvoice | grep amt_paid_sat | cut -d '"' -f 4)
@@ -48,7 +47,7 @@ then
       account=$((account+1))
       checktime=$current
    fi
-   account=$((account+5))
+   account=$((account+2))
 fi
 
 current=$(date '+%s')
